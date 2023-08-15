@@ -54,9 +54,9 @@ public class TaskManagerGUI extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tareasList);
 
         filtroCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todas las tareas", "Tareas completadas", "Tareas pendientes" }));
-        filtroCombo.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                filtroComboItemStateChanged(evt);
+        filtroCombo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filtroComboActionPerformed(evt);
             }
         });
 
@@ -170,10 +170,10 @@ public class TaskManagerGUI extends javax.swing.JFrame {
 
     }//GEN-LAST:event_textoFieldActionPerformed
 
-    private void filtroComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filtroComboItemStateChanged
-        
+    private void filtroComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtroComboActionPerformed
+        // TODO add your handling code here:
         int selectedCombo = filtroCombo.getSelectedIndex();
-
+        
         switch (selectedCombo) {
             case 0:
                 tareasList.setModel(listModel_all);
@@ -187,7 +187,7 @@ public class TaskManagerGUI extends javax.swing.JFrame {
             default:
                 break;
         }
-    }//GEN-LAST:event_filtroComboItemStateChanged
+    }//GEN-LAST:event_filtroComboActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -208,9 +208,8 @@ public class TaskManagerGUI extends javax.swing.JFrame {
 
 //    private DefaultListModel<Tarea> listModel = new DefaultListModel<>();
     private void cargarTareas() {
-
         tareasList.setModel(listModel_all);
-
+        
         listModel_all.addElement(new Tarea("Hacer la cama"));
         listModel_all.addElement(new Tarea("Comprar panqueques"));
         listModel_all.addElement(new Tarea("Comprar munición 9mm"));
@@ -222,21 +221,17 @@ public class TaskManagerGUI extends javax.swing.JFrame {
         listModel_all.addElement(new Tarea("Contar ovejas", true));
         listModel_all.addElement(new Tarea("Enderezar una torre de pizza", true));
 
-        listModel_done = listModel_all;
-        listModel_incomplete = listModel_all;
-
-        for (int i = 0; i < listModel_done.getSize(); i++) {
-            if (!listModel_done.getElementAt(i).isIsDone()) {
-                listModel_done.remove(i);
+        for (int i = 0; i < listModel_all.getSize(); i++) {
+            if (listModel_all.getElementAt(i).isIsDone()) {
+                listModel_done.addElement(listModel_all.get(i));
             }
         }
 
-        for (int i = 0; i < listModel_incomplete.getSize(); i++) {
-            if (listModel_incomplete.isEmpty()) {
-                listModel_incomplete.remove(i);
+        for (int i = 0; i < listModel_all.getSize(); i++) {
+            if (!listModel_all.getElementAt(i).isIsDone()) {
+                listModel_incomplete.addElement(listModel_all.get(i));
             }
         }
-
     }
 
 }
