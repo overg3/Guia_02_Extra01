@@ -122,8 +122,18 @@ public class TaskManagerGUI extends javax.swing.JFrame {
         });
 
         eliminarButton.setText("Eliminar Tarea");
+        eliminarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarButtonActionPerformed(evt);
+            }
+        });
 
         borrarTodoButton.setText("Borrar Todo");
+        borrarTodoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                borrarTodoButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
         leftPanel.setLayout(leftPanelLayout);
@@ -201,7 +211,7 @@ public class TaskManagerGUI extends javax.swing.JFrame {
                 break;
             case 2:
                 tareasList.setModel(listModel_incomplete);
-                
+
                 break;
             default:
                 break;
@@ -214,11 +224,40 @@ public class TaskManagerGUI extends javax.swing.JFrame {
         try {
             tareasList.getSelectedValue().setIsDone(true);
             refreshLists();
-            JOptionPane.showMessageDialog(this, "Tarea completada", "", JOptionPane.INFORMATION_MESSAGE);
+            tareasList.repaint();
         } catch (NullPointerException e) {
             JOptionPane.showMessageDialog(this, "No ha seleccionado una tarea", " Advertencia", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_tareaCompletadaButtonActionPerformed
+
+    private void eliminarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarButtonActionPerformed
+
+        try {
+            String taskToRemove = tareasList.getSelectedValue().getDescripcion();
+
+            for (int i = 0; i < listModel_all.getSize(); i++) {
+                if (listModel_all.getElementAt(i).getDescripcion()
+                        .equals(taskToRemove)) {
+                    listModel_all.remove(i);
+                }
+            }
+
+            refreshLists();
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ninguna tarea",
+                    " Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
+
+
+    }//GEN-LAST:event_eliminarButtonActionPerformed
+
+    private void borrarTodoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borrarTodoButtonActionPerformed
+
+        listModel_all.removeAllElements();
+        listModel_done.removeAllElements();
+        listModel_incomplete.removeAllElements();
+
+    }//GEN-LAST:event_borrarTodoButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -238,7 +277,6 @@ public class TaskManagerGUI extends javax.swing.JFrame {
 
     private EmptyBorder borderSpace = new EmptyBorder(20, 20, 20, 20);
 
-//    private DefaultListModel<Tarea> listModel = new DefaultListModel<>();
     private void cargarTareas() {
         tareasList.setModel(listModel_all);
 
@@ -247,11 +285,11 @@ public class TaskManagerGUI extends javax.swing.JFrame {
         listModel_all.addElement(new Tarea("Comprar munición 9mm"));
         listModel_all.addElement(new Tarea("Armar bomba nuclear"));
         listModel_all.addElement(new Tarea("Iniciar el apocalipsis"));
-        listModel_all.addElement(new Tarea("Pasear al perro", true));
-        listModel_all.addElement(new Tarea("Comprar cigarrillos", true));
-        listModel_all.addElement(new Tarea("Conquistar el mundo", true));
-        listModel_all.addElement(new Tarea("Contar ovejas", true));
-        listModel_all.addElement(new Tarea("Enderezar una torre de pizza", true));
+        listModel_all.addElement(new Tarea("✔ Pasear al perro", true));
+        listModel_all.addElement(new Tarea("✔ Comprar cigarrillos", true));
+        listModel_all.addElement(new Tarea("✔ Conquistar el mundo", true));
+        listModel_all.addElement(new Tarea("✔ Contar ovejas", true));
+        listModel_all.addElement(new Tarea("✔ Enderezar una torre de pizza", true));
 
         for (int i = 0; i < listModel_all.getSize(); i++) {
             if (listModel_all.getElementAt(i).isIsDone()) {

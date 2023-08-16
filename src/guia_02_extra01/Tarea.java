@@ -1,8 +1,7 @@
-
 package guia_02_extra01;
 
 public class Tarea {
-    
+
     private String descripcion;
     private boolean isDone;
 
@@ -15,8 +14,6 @@ public class Tarea {
         this.descripcion = descripcion;
         this.isDone = isDone;
     }
-    
-    
 
     public String getDescripcion() {
         return descripcion;
@@ -31,16 +28,17 @@ public class Tarea {
     }
 
     public void setIsDone(boolean isDone) {
-        this.isDone = isDone;
+
+        if (!this.isDone && isDone) {
+            this.isDone = isDone;
+            this.descripcion = "✔ " + descripcion;
+        }
+
     }
 
     @Override
     public String toString() {
         return descripcion;
     }
-    
-    
-    
-    
-    
+
 }
