@@ -6,6 +6,7 @@
 package guia_02_extra01;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -37,6 +38,7 @@ public class TaskManagerGUI extends javax.swing.JFrame {
         tareasList = new javax.swing.JList<>();
         filtroCombo = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
+        tareaCompletadaButton = new javax.swing.JButton();
         leftPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         textoField = new javax.swing.JTextField();
@@ -62,6 +64,13 @@ public class TaskManagerGUI extends javax.swing.JFrame {
 
         jLabel2.setText("Filtrar por:");
 
+        tareaCompletadaButton.setText("Tarea Completada");
+        tareaCompletadaButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tareaCompletadaButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout rightPanelLayout = new javax.swing.GroupLayout(rightPanel);
         rightPanel.setLayout(rightPanelLayout);
         rightPanelLayout.setHorizontalGroup(
@@ -70,10 +79,13 @@ public class TaskManagerGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(filtroCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
                     .addGroup(rightPanelLayout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(tareaCompletadaButton)))
                 .addContainerGap())
         );
         rightPanelLayout.setVerticalGroup(
@@ -84,8 +96,10 @@ public class TaskManagerGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(filtroCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tareaCompletadaButton)
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         getContentPane().add(rightPanel, java.awt.BorderLayout.EAST);
@@ -155,9 +169,11 @@ public class TaskManagerGUI extends javax.swing.JFrame {
     private void agregarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarButtonActionPerformed
 
         String textoTarea = textoField.getText().trim();
+        int selectedItem = tareasList.getSelectedIndex();
 
         if (!textoTarea.isEmpty()) {
             listModel_all.addElement(new Tarea(textoTarea));
+            refreshLists();
             textoField.setText("");
         }
         textoField.setText("");
@@ -173,21 +189,36 @@ public class TaskManagerGUI extends javax.swing.JFrame {
     private void filtroComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtroComboActionPerformed
         // TODO add your handling code here:
         int selectedCombo = filtroCombo.getSelectedIndex();
-        
+        boolean buttonStatus = true;
+
         switch (selectedCombo) {
             case 0:
                 tareasList.setModel(listModel_all);
                 break;
             case 1:
                 tareasList.setModel(listModel_done);
+                buttonStatus = false;
                 break;
             case 2:
                 tareasList.setModel(listModel_incomplete);
+                
                 break;
             default:
                 break;
         }
+        tareaCompletadaButton.setEnabled(buttonStatus);
     }//GEN-LAST:event_filtroComboActionPerformed
+
+    private void tareaCompletadaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tareaCompletadaButtonActionPerformed
+
+        try {
+            tareasList.getSelectedValue().setIsDone(true);
+            refreshLists();
+            JOptionPane.showMessageDialog(this, "Tarea completada", "", JOptionPane.INFORMATION_MESSAGE);
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(this, "No ha seleccionado una tarea", " Advertencia", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_tareaCompletadaButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -200,6 +231,7 @@ public class TaskManagerGUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JPanel rightPanel;
+    private javax.swing.JButton tareaCompletadaButton;
     private javax.swing.JList<Tarea> tareasList;
     private javax.swing.JTextField textoField;
     // End of variables declaration//GEN-END:variables
@@ -209,7 +241,7 @@ public class TaskManagerGUI extends javax.swing.JFrame {
 //    private DefaultListModel<Tarea> listModel = new DefaultListModel<>();
     private void cargarTareas() {
         tareasList.setModel(listModel_all);
-        
+
         listModel_all.addElement(new Tarea("Hacer la cama"));
         listModel_all.addElement(new Tarea("Comprar panqueques"));
         listModel_all.addElement(new Tarea("Comprar munición 9mm"));
@@ -224,14 +256,25 @@ public class TaskManagerGUI extends javax.swing.JFrame {
         for (int i = 0; i < listModel_all.getSize(); i++) {
             if (listModel_all.getElementAt(i).isIsDone()) {
                 listModel_done.addElement(listModel_all.get(i));
-            }
-        }
-
-        for (int i = 0; i < listModel_all.getSize(); i++) {
-            if (!listModel_all.getElementAt(i).isIsDone()) {
+            } else {
                 listModel_incomplete.addElement(listModel_all.get(i));
             }
         }
+    }
+
+    private void refreshLists() {
+
+        listModel_done.removeAllElements();
+        listModel_incomplete.removeAllElements();
+
+        for (int i = 0; i < listModel_all.getSize(); i++) {
+            if (listModel_all.getElementAt(i).isIsDone()) {
+                listModel_done.addElement(listModel_all.get(i));
+            } else {
+                listModel_incomplete.addElement(listModel_all.get(i));
+            }
+        }
+
     }
 
 }
